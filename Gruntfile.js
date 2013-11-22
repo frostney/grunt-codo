@@ -27,6 +27,16 @@ module.exports = function(grunt) {
     clean: {
       tests: ['tmp'],
     },
+    
+    coffee: {
+      compile: {
+        expand: true,
+        cwd: 'src',
+        src: '**/*.coffee',
+        dest: 'tasks/',
+        ext: '.js'
+      }
+    },
 
     // Configuration to be run (and then tested).
     codo: {
@@ -55,13 +65,8 @@ module.exports = function(grunt) {
 
   });
 
-  // Actually load this plugin's task(s).
-  grunt.loadTasks('tasks');
-
-  // These plugins provide necessary tasks.
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+  grunt.loadTasks('./tasks');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
