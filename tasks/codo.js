@@ -9,6 +9,8 @@
 'use strict';
 
 module.exports = function(grunt) {
+  
+  var codo = require('codo');
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
@@ -16,8 +18,8 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('codo', 'Generates Codo documentation', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      punctuation: '.',
-      separator: ', '
+      source: 'src',
+      output: 'doc'
     });
 
     // Iterate over all specified file groups.
