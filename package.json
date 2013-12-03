@@ -48,6 +48,7 @@
   ],
   "dependencies": {
     "codo": "~2.0.0",
-    "coffee-script": "~1.6.3"
+    "coffee-script": "~1.6.3",
+    "cli-table": "~0.2.0"
   }
 }
