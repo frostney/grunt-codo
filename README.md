@@ -59,9 +59,8 @@ In this example, the default options are used to do something with whatever. So 
 ```js
 grunt.initConfig({
   codo: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    options: {
+       //codo options
     },
   },
 })
@@ -74,12 +73,10 @@ In this example, custom options are used to do something else with whatever else
 grunt.initConfig({
   codo: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+      title: "My library",
+      output: 'output/doc',
+      inputs: ["src/dir1", "src/dir2", "src/dir3"]
+    }
   },
 })
 ```
