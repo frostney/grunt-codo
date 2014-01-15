@@ -39,17 +39,17 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.inputs
+Type: `Array`
+Default value: `['src']`
+
+An array with the source elements to be processed through Codo.
+
+#### options.output
 Type: `String`
-Default value: `',  '`
+Default value: `'doc'`
 
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+Where the documentation will be written.
 
 ### Usage Examples
 
