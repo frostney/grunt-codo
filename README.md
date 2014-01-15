@@ -2,7 +2,7 @@
 
 > Grunt task for generating Codo documentation
 
-Codo is documentation generator for CoffeeScript, see https://github.com/netzpirat/codo for more information.
+Codo is a documentation generator for CoffeeScript, see https://github.com/netzpirat/codo for more information.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
