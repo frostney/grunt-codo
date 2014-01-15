@@ -13,18 +13,18 @@
   Table = require('cli-table');
 
   module.exports = function(grunt) {
-    var GruntCommand, _ref;
+    var GruntCommand;
     GruntCommand = (function(_super) {
       __extends(GruntCommand, _super);
 
       function GruntCommand() {
-        _ref = GruntCommand.__super__.constructor.apply(this, arguments);
-        return _ref;
+        this.theme = this.lookupTheme(this.options.theme);
+        this.generate();
       }
 
       GruntCommand.prototype.generate = function() {
-        var data, entry, environment, overall, section, sections, table, undocumented, _i, _len, _ref1, _results;
-        environment = Codo.parseProject(this.input, this.options);
+        var data, entry, environment, overall, section, sections, table, undocumented, _i, _len, _ref, _results;
+        environment = Codo.parseProject(process.cwd(), this.options);
         sections = this.collectStats(environment);
         this.theme.compile(environment);
         if (this.options.undocumented) {
@@ -37,9 +37,9 @@
             table = new Table({
               head: [section, 'Path']
             });
-            _ref1 = data.undocumented;
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              entry = _ref1[_i];
+            _ref = data.undocumented;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              entry = _ref[_i];
               table.push(entry);
             }
             grunt.log.writeln(table.toString());
@@ -68,70 +68,44 @@
       return GruntCommand;
 
     })(Command);
-    return grunt.registerTask('codo', 'Generates Codo documentation', function() {
+    return grunt.registerTask("codo", "Generates Codo documentation", function() {
       var options;
       options = this.options({
-        source: 'src',
-        output: 'doc',
-        theme: 'default',
+        inputs: ["src"],
+        output: "doc",
+        theme: "default",
         quiet: false,
         verbose: false,
         undocumented: false,
         closure: false,
-        debug: true
+        debug: true,
+        "private": false,
+        analytics: false,
+        title: "API Documentation"
       });
-      GruntCommand.prototype.options = [
-        {
-          name: 'help',
-          alias: 'h',
-          describe: 'Show this help'
-        }, {
-          name: 'version',
-          describe: 'Show version'
-        }, {
-          name: 'output',
-          alias: 'o',
-          describe: 'The output directory',
-          "default": options.output
-        }, {
-          name: 'output-dir'
-        }, {
-          name: 'theme',
-          describe: 'The theme to be used',
-          "default": options.theme
-        }, {
-          name: 'name',
-          alias: 'n',
-          describe: 'The project name used'
-        }, {
-          name: 'quiet',
-          alias: 'q',
-          describe: 'Supress warnings',
-          boolean: true,
-          "default": options.quiet
-        }, {
-          name: 'verbose',
-          alias: 'v',
-          describe: 'Show parsing errors',
-          boolean: true,
-          "default": options.verbose
-        }, {
-          name: 'undocumented',
-          alias: 'u',
-          describe: 'List undocumented objects',
-          boolean: true,
-          "default": options.undocumented
-        }, {
-          name: 'closure',
-          describe: 'Try to parse closure-like block comments',
-          boolean: true,
-          "default": options.closure
-        }, {
-          name: 'debug',
-          alias: 'd',
-          boolean: options.debug
-        }
-      ];
+      GruntCommand.prototype.options = {
+        quiet: options.quiet,
+        q: options.quiet,
+        verbose: options.verbose,
+        v: options.verbose,
+        undocumented: options.undocumented,
+        u: options.undocumented,
+        closure: options.closure,
+        debug: options.debug,
+        d: options.debug,
+        "private": options["private"],
+        p: options["private"],
+        platform: "core",
+        stack: true,
+        output: options.output,
+        o: options.output,
+        theme: options.theme,
+        analytics: options.analytics,
+        a: options.analytics,
+        title: options.title,
+        t: options.title,
+        inputs: options.inputs
+      };
       return GruntCommand.run();
     });
   };

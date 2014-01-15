@@ -9,8 +9,12 @@ Table = require 'cli-table'
 module.exports = (grunt) ->
   
   class GruntCommand extends Command
+    constructor: ->
+      @theme = @lookupTheme(@options.theme)
+      @generate()
+      
     generate: ->
-      environment = Codo.parseProject(@input, @options)
+      environment = Codo.parseProject(process.cwd(), @options)
       sections    = @collectStats(environment)
   
       @theme.compile(environment)
@@ -48,32 +52,42 @@ module.exports = (grunt) ->
         grunt.log.writeln ''
   
 
-  grunt.registerTask 'codo', 'Generates Codo documentation', ->
-    
-    options = @options
-      source: 'src'
-      output: 'doc'
-      theme: 'default'
-      quiet: false
-      verbose: false
-      undocumented: false
-      closure: false
-      debug: true
-      
-    GruntCommand::options = [
-      {name: 'help', alias: 'h', describe: 'Show this help'}
-      {name: 'version', describe: 'Show version'}
-      {name: 'output', alias: 'o', describe: 'The output directory', default: options.output}
-      {name: 'output-dir'}
-      {name: 'theme', describe: 'The theme to be used', default: options.theme}
-      {name: 'name', alias: 'n', describe: 'The project name used'}
-      #{name: 'readme', alias: 'r', describe: 'The readme file used'}
-      {name: 'quiet', alias: 'q', describe: 'Supress warnings', boolean: true, default: options.quiet}
-      {name: 'verbose', alias: 'v', describe: 'Show parsing errors', boolean: true, default: options.verbose}
-      {name: 'undocumented', alias: 'u', describe: 'List undocumented objects', boolean: true, default: options.undocumented}
-      {name: 'closure', describe: 'Try to parse closure-like block comments', boolean: true, default: options.closure}
-      {name: 'debug', alias: 'd', boolean: options.debug}
-    ]
-    
-    GruntCommand.run()
+  grunt.registerTask "codo", "Generates Codo documentation", ->
+      options = @options(
+        inputs: ["src"]
+        output: "doc"
+        theme: "default"
+        quiet: false
+        verbose: false
+        undocumented: false
+        closure: false
+        debug: true
+        private: false
+        analytics: false
+        title: "API Documentation"
+      )
+      GruntCommand::options =
+        quiet: options.quiet
+        q: options.quiet
+        verbose: options.verbose
+        v: options.verbose
+        undocumented: options.undocumented
+        u: options.undocumented
+        closure: options.closure
+        debug: options.debug
+        d: options.debug
+        private: options.private
+        p: options.private
+        platform: "core"
+        stack: true
+        output: options.output
+        o: options.output
+        theme: options.theme
+        analytics: options.analytics
+        a: options.analytics
+        title: options.title
+        t: options.title
+        inputs: options.inputs
+
+      GruntCommand.run()
     
