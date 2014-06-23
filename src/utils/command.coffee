@@ -1,8 +1,8 @@
 ###
- * grunt-codo-codo
- * https://github.com/Leny/grunt-codo-codo
+ * grunt-codo
+ * https://github.com/Stoney-FD/grunt-codo
  *
- * Copyright (c) 2014 Leny
+ * Copyright (c) 2014 Johannes Stein
  * Licensed under the MIT license.
 ###
 
