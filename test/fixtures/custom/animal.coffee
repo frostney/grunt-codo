@@ -2,7 +2,7 @@
 #
 # @example How to subclass an animal
 #   class Lion extends Animal
-#     move: (direction, speed): ->
+#     move: (direction, speed) ->
 #
 class Example.Animal
 
