@@ -1,6 +1,9 @@
 # grunt-codo
 
-![NPM version](http://img.shields.io/npm/v/grunt-codo.svg) ![Dependency Status](https://david-dm.org/Stoney-FD/grunt-codo.svg) ![Downloads counter](http://img.shields.io/npm/dm/grunt-codo.svg)
+[![Build Status](https://travis-ci.org/Stoney-FD/grunt-codo.svg?branch=master)](https://travis-ci.org/Stoney-FD/grunt-codo)
+![NPM version](http://img.shields.io/npm/v/grunt-codo.svg)
+![Dependency Status](https://david-dm.org/Stoney-FD/grunt-codo.svg)
+![Downloads counter](http://img.shields.io/npm/dm/grunt-codo.svg)
 
 > Grunt task for generating Codo documentation
 
