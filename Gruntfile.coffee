@@ -14,36 +14,10 @@ module.exports = ( grunt ) ->
 
     grunt.initConfig
         coffeelint:
-            options:
-                arrow_spacing:
-                    level: "error"
-                camel_case_classes:
-                    level: "error"
-                duplicate_key:
-                    level: "error"
-                indentation:
-                    level: "ignore"
-                max_line_length:
-                    level: "ignore"
-                no_backticks:
-                    level: "error"
-                no_empty_param_list:
-                    level: "error"
-                no_stand_alone_at:
-                    level: "error"
-                no_tabs:
-                    level: "error"
-                no_throwing_strings:
-                    level: "error"
-                no_trailing_semicolons:
-                    level: "error"
-                no_unnecessary_fat_arrows:
-                    level: "error"
-                space_operators:
-                    level: "error"
+            options: grunt.file.readJSON "coffeelint.json"
             task:
                 files:
-                    src: [ "src/*.coffee" ]
+                    src: [ "Gruntfile.coffee", "src/**/*.coffee" ]
         coffee:
             options:
                 bare: yes
@@ -72,8 +46,12 @@ module.exports = ( grunt ) ->
 
     grunt.loadTasks "tasks"
 
+    grunt.registerTask "lint", [
+      "coffeelint"
+    ]
+
     grunt.registerTask "default", [
-        "coffeelint"
+        "lint"
         "coffee"
         "clean"
         "codo"
