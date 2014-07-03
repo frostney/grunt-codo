@@ -1,113 +1,96 @@
-(function() {
-  'use strict';
-  var Codo, Command, Table,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  require('coffee-script');
+/*
+ * grunt-codo
+ * https://github.com/Stoney-FD/grunt-codo
+ *
+ * Copyright (c) 2014 Johannes Stein
+ * Licensed under the MIT license.
+ */
+"use strict";
+var CLITable, Codo, chalk, lodash, path;
 
-  Codo = require('codo/lib/codo');
+path = require("path");
 
-  Command = require('codo/lib/command');
+lodash = require("lodash");
 
-  Table = require('cli-table');
+chalk = require("chalk");
 
-  module.exports = function(grunt) {
-    var GruntCommand;
-    GruntCommand = (function(_super) {
-      __extends(GruntCommand, _super);
+CLITable = require("cli-table");
 
-      function GruntCommand() {
-        this.theme = this.lookupTheme(this.options.theme);
-        this.generate();
-      }
+Codo = require("./utils/command.js");
 
-      GruntCommand.prototype.generate = function() {
-        var data, entry, environment, overall, section, sections, table, undocumented, _i, _len, _ref, _results;
-        environment = Codo.parseProject(process.cwd(), this.options);
-        sections = this.collectStats(environment);
-        this.theme.compile(environment);
-        if (this.options.undocumented) {
-          _results = [];
-          for (section in sections) {
-            data = sections[section];
-            if (!(data.undocumented.length !== 0)) {
-              continue;
-            }
-            table = new Table({
-              head: [section, 'Path']
-            });
-            _ref = data.undocumented;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              entry = _ref[_i];
-              table.push(entry);
-            }
-            grunt.log.writeln(table.toString());
-            _results.push(grunt.log.writeln(''));
-          }
-          return _results;
-        } else {
-          overall = 0;
-          undocumented = 0;
-          for (section in sections) {
-            data = sections[section];
-            overall += data.total;
-            undocumented += data.undocumented.length;
-          }
-          table = new Table({
-            head: ['', 'Total', 'Undocumented']
-          });
-          table.push(['Files', environment.allFiles().length, ''], ['Extras', environment.allExtras().length, ''], ['Classes', sections['Classes'].total, sections['Classes'].undocumented.length], ['Mixins', sections['Mixins'].total, sections['Mixins'].undocumented.length], ['Methods', sections['Methods'].total, sections['Methods'].undocumented.length]);
-          grunt.log.writeln(table.toString());
-          grunt.log.writeln('');
-          grunt.log.writeln("  Totally documented: " + ((100 - 100 / overall * undocumented).toFixed(2)) + "%");
-          return grunt.log.writeln('');
-        }
-      };
-
-      return GruntCommand;
-
-    })(Command);
-    return grunt.registerTask("codo", "Generates Codo documentation", function() {
-      var options;
-      options = this.options({
-        inputs: ["src"],
-        output: "doc",
-        theme: "default",
-        quiet: false,
-        verbose: false,
-        undocumented: false,
-        closure: false,
-        debug: true,
-        "private": false,
-        analytics: false,
-        title: "API Documentation"
-      });
-      GruntCommand.prototype.options = {
-        quiet: options.quiet,
-        q: options.quiet,
-        verbose: options.verbose,
-        v: options.verbose,
-        undocumented: options.undocumented,
-        u: options.undocumented,
-        closure: options.closure,
-        debug: options.debug,
-        d: options.debug,
-        "private": options["private"],
-        p: options["private"],
-        platform: "core",
-        stack: true,
-        output: options.output,
-        o: options.output,
-        theme: options.theme,
-        analytics: options.analytics,
-        a: options.analytics,
-        title: options.title,
-        t: options.title,
-        inputs: options.inputs
-      };
-      return GruntCommand.run();
+module.exports = function(grunt) {
+  return grunt.registerMultiTask("codo", "Generate codo documentation.", function() {
+    var aFolderSources, iPercent, oCodo, oData, oEntry, oOptions, oStats, oTable, sSection, _i, _j, _len, _len1, _ref, _ref1, _ref2, _results;
+    oOptions = this.options({
+      extension: "coffee",
+      output: (_ref = this.data.dest) != null ? _ref : "./doc",
+      theme: "default",
+      name: "Codo",
+      title: "Documentation",
+      readme: "README.md",
+      quiet: false,
+      verbose: false,
+      undocumented: false,
+      closure: false,
+      "private": false,
+      analytics: false,
+      stats: true,
+      extras: []
     });
-  };
-
-}).call(this);
+    aFolderSources = [];
+    this.filesSrc.filter(function(sFilePath) {
+      return grunt.file.exists(sFilePath);
+    }).forEach(function(sFilePath) {
+      if (grunt.file.isDir(sFilePath)) {
+        return aFolderSources.push(sFilePath);
+      }
+      if (grunt.file.isFile(sFilePath)) {
+        return aFolderSources.push(path.dirname(sFilePath));
+      }
+    });
+    aFolderSources = lodash.uniq(aFolderSources);
+    oCodo = new Codo(aFolderSources, oOptions);
+    oCodo.generate();
+    if (oOptions.stats) {
+      oTable = new CLITable({
+        head: ["", chalk.cyan("Documented"), chalk.cyan("Undocumented"), chalk.cyan("Total"), chalk.cyan("Percent")]
+      });
+      oStats = oCodo.getStats();
+      _ref1 = ["classes", "mixins", "methods"];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        sSection = _ref1[_i];
+        oTable.push([chalk.cyan(sSection), oStats[sSection].documented, oStats[sSection].undocumented, oStats[sSection].total, (iPercent = oStats[sSection].percent) ? chalk[iPercent > 100 ? "yellow" : "green"]("" + iPercent + "%") : "-"]);
+      }
+      oTable.push([]);
+      oTable.push(["", chalk.cyan("Files"), chalk.cyan("Extras"), chalk.cyan("Objects"), chalk.cyan("Coverage")]);
+      oTable.push([chalk.underline.cyan(this.nameArgs), oStats.files, oStats.extras, oStats.all.total, chalk.bold[(iPercent = oStats.all.percent) > 100 ? "yellow" : "green"]("" + iPercent + "%")]);
+      grunt.log.writeln();
+      grunt.log.writeln(oTable.toString());
+      grunt.log.writeln();
+    }
+    if (oOptions.undocumented && (oStats != null ? oStats : oStats = oCodo.getStats()).all.undocumented) {
+      grunt.log.writeln();
+      grunt.log.writeln(chalk.yellow.underline("Undocumented objects"));
+      grunt.log.writeln();
+      _ref2 = oStats.undocumented;
+      _results = [];
+      for (sSection in _ref2) {
+        oData = _ref2[sSection];
+        if (!oData.length) {
+          continue;
+        }
+        oTable = new CLITable({
+          head: [chalk.cyan(sSection), chalk.cyan("Path")]
+        });
+        for (_j = 0, _len1 = oData.length; _j < _len1; _j++) {
+          oEntry = oData[_j];
+          oTable.push([chalk.cyan(oEntry[0]), path.relative(process.cwd(), oEntry[1])]);
+        }
+        grunt.log.writeln(oTable.toString());
+        _results.push(grunt.log.writeln());
+      }
+      return _results;
+    }
+  });
+};

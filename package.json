@@ -1,13 +1,30 @@
 {
   "name": "grunt-codo",
-  "description": "Grunt task for generating Codo documentation",
   "version": "0.1.0",
+  "description": "Grunt task for generating Codo documentation",
+  "keywords": [
+    "gruntplugin",
+    "coffeescript",
+    "codo",
+    "doc",
+    "documentation"
+  ],
   "homepage": "https://github.com/Stoney-FD/grunt-codo",
   "author": {
     "name": "Johannes Stein",
     "email": "johannesstein@freeze-dev.com",
     "url": "http://freeze-dev.com"
   },
+  "contributors": [
+    {
+      "name": "Bart van den Ende",
+      "url": "http://www.bartvandenende.nl"
+    },
+    {
+      "name": "Leny",
+      "url": "http://leny.me"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Stoney-FD/grunt-codo.git"
@@ -29,26 +46,20 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.1",
-    "grunt-contrib-coffee": "~0.7.0",
-    "matchdep": "~0.3.0"
+    "grunt-contrib-clean": "~0.4",
+    "grunt-contrib-coffee": "~0.10",
+    "grunt-coffeelint": "~0.0",
+    "matchdep": "~0.3",
+    "grunt": "~0.4.5"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
   },
-  "keywords": [
-    "gruntplugin",
-    "coffeescript",
-    "codo",
-    "doc",
-    "documentation"
-  ],
   "dependencies": {
-    "codo": "~2.0.0",
-    "coffee-script": "~1.6.3",
-    "cli-table": "~0.2.0"
+    "chalk": "~0.4",
+    "codo": "~2.0",
+    "coffee-script": "~1.7",
+    "cli-table": "~0.3",
+    "lodash": "~2.4"
   }
 }

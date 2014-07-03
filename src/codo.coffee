@@ -1,93 +1,96 @@
-'use strict'
+###
+ * grunt-codo
+ * https://github.com/Stoney-FD/grunt-codo
+ *
+ * Copyright (c) 2014 Johannes Stein
+ * Licensed under the MIT license.
+###
 
-require 'coffee-script'
+"use strict"
 
-Codo = require 'codo/lib/codo'
-Command = require 'codo/lib/command'
-Table = require 'cli-table'
+path = require "path"
+lodash = require "lodash"
+chalk = require "chalk"
+CLITable = require "cli-table"
 
-module.exports = (grunt) ->
-  
-  class GruntCommand extends Command
-    constructor: ->
-      @theme = @lookupTheme(@options.theme)
-      @generate()
-      
-    generate: ->
-      environment = Codo.parseProject(process.cwd(), @options)
-      sections    = @collectStats(environment)
-  
-      @theme.compile(environment)
-  
-      if @options.undocumented
-        for section, data of sections when data.undocumented.length != 0
-          table = new Table
-            head: [section, 'Path']
-  
-          table.push(entry) for entry in data.undocumented
-          grunt.log.writeln table.toString()
-          grunt.log.writeln ''
-      else
-        overall      = 0
-        undocumented = 0
-  
-        for section, data of sections
-          overall      += data.total
-          undocumented += data.undocumented.length
-  
-        table = new Table
-          head: ['', 'Total', 'Undocumented']
-  
-        table.push(
-          ['Files', environment.allFiles().length, ''],
-          ['Extras', environment.allExtras().length, ''],
-          ['Classes', sections['Classes'].total, sections['Classes'].undocumented.length],
-          ['Mixins', sections['Mixins'].total, sections['Mixins'].undocumented.length],
-          ['Methods', sections['Methods'].total, sections['Methods'].undocumented.length]
-        )
-  
-        grunt.log.writeln table.toString()
-        grunt.log.writeln ''
-        grunt.log.writeln "  Totally documented: #{(100 - 100/overall*undocumented).toFixed(2)}%"
-        grunt.log.writeln ''
-  
+Codo = require "./utils/command.js"
 
-  grunt.registerTask "codo", "Generates Codo documentation", ->
-      options = @options(
-        inputs: ["src"]
-        output: "doc"
-        theme: "default"
-        quiet: false
-        verbose: false
-        undocumented: false
-        closure: false
-        debug: true
-        private: false
-        analytics: false
-        title: "API Documentation"
-      )
-      GruntCommand::options =
-        quiet: options.quiet
-        q: options.quiet
-        verbose: options.verbose
-        v: options.verbose
-        undocumented: options.undocumented
-        u: options.undocumented
-        closure: options.closure
-        debug: options.debug
-        d: options.debug
-        private: options.private
-        p: options.private
-        platform: "core"
-        stack: true
-        output: options.output
-        o: options.output
-        theme: options.theme
-        analytics: options.analytics
-        a: options.analytics
-        title: options.title
-        t: options.title
-        inputs: options.inputs
+module.exports = ( grunt ) ->
 
-      GruntCommand.run()
-    
+    grunt.registerMultiTask "codo", "Generate codo documentation.", ->
+        oOptions = @options
+            extension: "coffee"
+            output: @data.dest ? "./doc"
+            theme: "default"
+            name: "Codo"
+            title: "Documentation"
+            readme: "README.md"
+            quiet: no
+            verbose: no
+            undocumented: no
+            closure: no
+            private: no
+            analytics: no
+            stats: yes
+            extras: []
+
+        aFolderSources = []
+
+        @filesSrc
+            .filter ( sFilePath ) ->
+                grunt.file.exists sFilePath
+            .forEach ( sFilePath ) ->
+                # As codo seems to expect folders path instead of files, we will use dirname of given files, and store them into aFolderSources
+                return aFolderSources.push sFilePath if grunt.file.isDir sFilePath
+                return aFolderSources.push path.dirname sFilePath if grunt.file.isFile sFilePath
+
+        aFolderSources = lodash.uniq aFolderSources
+
+        oCodo = new Codo aFolderSources, oOptions
+
+        oCodo.generate()
+
+        if oOptions.stats
+            oTable = new CLITable
+                head: [ "", chalk.cyan( "Documented" ), chalk.cyan( "Undocumented" ), chalk.cyan( "Total" ), chalk.cyan( "Percent" ) ]
+
+            oStats = oCodo.getStats()
+
+            for sSection in [ "classes", "mixins", "methods" ]
+                oTable.push [
+                    chalk.cyan sSection
+                    oStats[ sSection ].documented
+                    oStats[ sSection ].undocumented
+                    oStats[ sSection ].total
+                    if iPercent = oStats[ sSection ].percent then chalk[ if iPercent > 100 then "yellow" else "green" ]( "#{ iPercent }%" ) else "-"
+                ]
+            oTable.push []
+            oTable.push [ "", chalk.cyan( "Files" ), chalk.cyan( "Extras" ), chalk.cyan( "Objects" ), chalk.cyan( "Coverage" ) ]
+            oTable.push [
+                chalk.underline.cyan @nameArgs
+                oStats.files
+                oStats.extras
+                oStats.all.total
+                chalk.bold[ if ( iPercent = oStats.all.percent ) > 100 then "yellow" else "green" ]( "#{ iPercent }%" )
+            ]
+
+            grunt.log.writeln()
+            grunt.log.writeln oTable.toString()
+            grunt.log.writeln()
+
+        if oOptions.undocumented and ( oStats ?= oCodo.getStats() ).all.undocumented
+            grunt.log.writeln()
+            grunt.log.writeln chalk.yellow.underline "Undocumented objects"
+            grunt.log.writeln()
+
+            for sSection, oData of oStats.undocumented when oData.length
+                oTable = new CLITable
+                    head: [ chalk.cyan( sSection ), chalk.cyan( "Path" ) ]
+
+                for oEntry in oData
+                    oTable.push [
+                        chalk.cyan oEntry[ 0 ]
+                        path.relative process.cwd(), oEntry[ 1 ]
+                    ]
+                grunt.log.writeln oTable.toString()
+                grunt.log.writeln()

@@ -1,11 +1,16 @@
 # grunt-codo
 
+![NPM version](http://img.shields.io/npm/v/grunt-codo.svg) ![Dependency Status](https://david-dm.org/Stoney-FD/grunt-codo.svg) ![Downloads counter](http://img.shields.io/npm/dm/grunt-codo.svg)
+
 > Grunt task for generating Codo documentation
 
 Codo is a documentation generator for CoffeeScript, see https://github.com/netzpirat/codo for more information.
 
+* * *
+
 ## Getting Started
-This plugin requires Grunt `~0.4.1`
+
+This plugin requires Grunt `~0.4.5`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
@@ -22,6 +27,7 @@ grunt.loadNpmTasks('grunt-codo');
 ## The "codo" task
 
 ### Overview
+
 In your project's Gruntfile, add a section named `codo` to the data object passed into `grunt.initConfig()`.
 
 ```js
@@ -34,55 +40,168 @@ grunt.initConfig({
       // Target-specific file lists and/or options go here.
     },
   },
-})
+});
 ```
+
+### Target
+
+**Codo** expect to lookup for `coffee` files into given folder, and a destination path to generate the documentation.
+
+So, in your target, don't forget to add `src` and `dest` properties. The `dest` property is optional, and is defaulting to `"./doc"`.
+
+**Note:** as **Codo** seems to expect folders path instead of files list, if files are given, the task will use their dirname as source.
 
 ### Options
 
-#### options.inputs
-Type: `Array`
-Default value: `['src']`
+#### options.stats
 
-An array with the source elements to be processed through Codo.
+Type: `Boolean`  
+Default value: `true`
+
+Show stats about the documentation generation.
+
+#### options.extension
+
+Type: `String`  
+Default value: `"coffee"`
+
+Coffee files extension.
 
 #### options.output
-Type: `String`
-Default value: `'doc'`
 
-Where the documentation will be written.
+Type: `String` (path)  
+Default value: `target.dest`, or `"./doc"`
+
+The documentation destination directory. If this option is given, it will overwrite the target's `dest` parameter.
+
+#### options.theme
+
+Type: `String`  
+Default value: `theme`
+
+The theme to be used.
+
+#### options.name
+
+Type: `String`  
+Default value: `"Codo"`
+
+The project name.
+
+#### options.title
+
+Type: `String`  
+Default value: `"Documentation"`
+
+Documentation HTML Title.
+
+#### options.readme
+
+Type: `String` (path)  
+Default value: `"README.md"`
+
+The README file used in documentation.
+
+#### options.quiet
+
+Type: `Boolean`  
+Default value: `false`
+
+Supress warnings
+
+#### options.verbose
+
+Type: `Boolean`  
+Default value: `false`
+
+Show parsing errors.
+
+#### options.undocumented
+
+Type: `Boolean`  
+Default value: `false`
+
+List undocumented objects.
+
+#### options.closure
+
+Type: `Boolean`  
+Default value: `false`
+
+Try to parse closure-like block comments.
+
+#### options.private
+
+Type: `Boolean`  
+Default value: `false`
+
+Show privates.
+
+#### options.analytics
+
+Type: `String`  
+Default value: `false`
+
+The Google Analytics ID.
+
+#### options.extras
+
+Type: `Array` of `String` (path)  
+Default value: `[]`
+
+Extra files to add to the documentation. **Markdown** files will be parsed.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+
+In this example, the default options are used to generate the documentation for the coffee files from the `src` directory into the default `./doc` folder.
 
 ```js
 grunt.initConfig({
   codo: {
-    options: {
-       //codo options
-    },
+    src: [
+      'src'
+    ]
   },
-})
+});
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+
+In this example, custom options are used to generate the documentation from api controllers and models into the `website/doc/api` folder. We also set names and title, include a *license* file, and ask the task to show us the undocumented objects, but not the stats of the generation.
 
 ```js
 grunt.initConfig({
   codo: {
-    options: {
-      title: "My library",
-      output: 'output/doc',
-      inputs: ["src/dir1", "src/dir2", "src/dir3"]
-    }
+    options:
+      name: "AwesomeProject"
+      title: "AwesomeProject API Documentation"
+      extra: [ "LICENSE-MIT" ]
+      undocumented: yes
+      stats: no
+    src: [
+      "src/controllers/api"
+      "src/models"
+    ]
+    dest: "website/doc/api"
   },
-})
+});
 ```
 
 ## Contributing
+
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+
+* **2014/01/16** : v0.1.0
+
+### Contributors
+
+* [bartsidee](https://github.com/bartsidee)
+* [leny](https://github.com/leny)
+
+## License
+Copyright (c) 2014 Johannes Stein  
+Licensed under the MIT license.
