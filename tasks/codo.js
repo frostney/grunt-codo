@@ -41,6 +41,8 @@ module.exports = function(grunt) {
     aFolderSources = [];
     this.filesSrc.filter(function(sFilePath) {
       return grunt.file.exists(sFilePath);
+    }).forEach(function(sFilePath) {
+      return aFolderSources.push(sFilePath);
     });
     aFolderSources = lodash.uniq(aFolderSources);
     oCodo = new Codo(aFolderSources, oOptions);
