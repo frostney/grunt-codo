@@ -40,9 +40,7 @@ module.exports = ( grunt ) ->
             .filter ( sFilePath ) ->
                 grunt.file.exists sFilePath
             .forEach ( sFilePath ) ->
-                # As codo seems to expect folders path instead of files, we will use dirname of given files, and store them into aFolderSources
-                return aFolderSources.push sFilePath if grunt.file.isDir sFilePath
-                return aFolderSources.push path.dirname sFilePath if grunt.file.isFile sFilePath
+                return aFolderSources.push sFilePath
 
         aFolderSources = lodash.uniq aFolderSources
 
