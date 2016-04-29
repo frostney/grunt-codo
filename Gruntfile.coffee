@@ -1,6 +1,6 @@
 ###
  * grunt-codo
- * https://github.com/Stoney-FD/grunt-codo
+ * https://github.com/frostney/grunt-codo
  *
  * Copyright (c) 2013 Johannes Stein
  * Licensed under the MIT license.

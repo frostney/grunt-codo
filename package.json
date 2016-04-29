@@ -1,6 +1,6 @@
 {
   "name": "grunt-codo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Grunt task for generating Codo documentation",
   "keywords": [
     "gruntplugin",
@@ -9,7 +9,7 @@
     "doc",
     "documentation"
   ],
-  "homepage": "https://github.com/Stoney-FD/grunt-codo",
+  "homepage": "https://github.com/frostney/grunt-codo",
   "author": {
     "name": "Johannes Stein",
     "email": "johannesstein@freeze-dev.com",

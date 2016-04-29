@@ -1,28 +1,28 @@
 
 /*
  * grunt-codo
- * https://github.com/Stoney-FD/grunt-codo
+ * https://github.com/frostney/grunt-codo
  *
  * Copyright (c) 2014 Johannes Stein
  * Licensed under the MIT license.
  */
 "use strict";
-var Codo, CodoCommand, Command, _base,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var Codo, CodoCommand, Command, base,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-if (typeof (_base = require("coffee-script")).register === "function") {
-  _base.register();
+if (typeof (base = require("coffee-script")).register === "function") {
+  base.register();
 }
 
 Command = require("codo/lib/command");
 
 Codo = require("codo/lib/codo");
 
-module.exports = CodoCommand = (function(_super) {
+module.exports = CodoCommand = (function(superClass) {
   var _getDocumentationPercent;
 
-  __extends(CodoCommand, _super);
+  extend(CodoCommand, superClass);
 
   function CodoCommand(sources, options) {
     this.sources = sources;
@@ -37,7 +37,7 @@ module.exports = CodoCommand = (function(_super) {
   };
 
   CodoCommand.prototype.getStats = function() {
-    var iAllTotal, iAllUndocumented, oData, sSection, _stats;
+    var _stats, iAllTotal, iAllUndocumented, oData, sSection;
     if (this.stats) {
       return this.stats;
     }
