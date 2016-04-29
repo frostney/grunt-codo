@@ -52,8 +52,6 @@ grunt.initConfig({
 
 So, in your target, don't forget to add `src` and `dest` properties. The `dest` property is optional, and is defaulting to `"./doc"`.
 
-**Note:** as **Codo** seems to expect folders path instead of files list, if files are given, the task will use their dirname as source.
-
 ### Options
 
 #### options.stats
@@ -204,6 +202,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 * [bartsidee](https://github.com/bartsidee)
 * [leny](https://github.com/leny)
+* [hildjj](https://github.com/hildjj))
 
 ## License
 Copyright (c) 2014 Johannes Stein  
